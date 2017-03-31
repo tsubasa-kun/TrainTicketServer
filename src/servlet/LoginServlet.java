@@ -17,6 +17,11 @@ import com.google.gson.Gson;
 import bean.UserBean;
 import db.DBHelper;
 
+/**
+ * 登录Servlet
+ * @author cookie
+ *
+ */
 public class LoginServlet extends HttpServlet {
 
 	/**

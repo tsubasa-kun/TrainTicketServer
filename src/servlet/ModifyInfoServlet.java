@@ -2,25 +2,30 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.*;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.ResultBean;
+import bean.UserBean;
+
 import com.google.gson.Gson;
 
-import bean.ResultBean;
 import db.DBHelper;
 
 /**
- * ×¢²áServlet
+ * ä¿®æ”¹ä¿¡æ¯Servlet
+ * 
  * @author cookie
- *
+ * 
  */
-public class RegisterServlet extends HttpServlet {
+public class ModifyInfoServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -58,56 +63,49 @@ public class RegisterServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// ÉèÖÃÇëÇó±àÂë
+		// è®¾ç½®è¯·æ±‚ç¼–ç 
 		response.setContentType("text/html;charset=utf-8");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 
-		// »ñÈ¡²ÎÊı
+		// è·å–å‚æ•°
 		String account = request.getParameter("account");
-		String password = request.getParameter("password");
 		String realName = request.getParameter("realName");
 		String idNumber = request.getParameter("idNumber");
 
-		// Ö´ĞĞÊı¾İ¿â²Ù×÷
-		String sql_que = "select * from users where account = '" + account
-				+ "'";
-		String sql_ins = "insert into users(account, password, real_name, id_number) values('"
-				+ account
-				+ "', '"
-				+ password
-				+ "', '"
-				+ realName
-				+ "', '"
-				+ idNumber + "')";
+		// æ‰§è¡Œæ•°æ®åº“æ“ä½œ
+		String sql_upd = "update users set real_name = '" + realName + "',id_number = '" + idNumber + "' where account = '" + account + "'";
+		String sql_que = "select * from users where account = '" + account + "'";
 		Statement stat = null;
 		ResultSet rs = null;
-		ResultBean resultBean = new ResultBean();
+		UserBean userBean = new UserBean();
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			rs = stat.executeQuery(sql_que);
-			if (rs.next()) {
-				resultBean.setResStatus("failed");
-				resultBean.setResMsg("¸ÃÕË»§ÒÑ´æÔÚ");
-			} else {
-				int row = stat.executeUpdate(sql_ins);
+				int row = stat.executeUpdate(sql_upd);
 				if (row == 1) {
-					resultBean.setResStatus("success");
-					resultBean.setResMsg("×¢²á³É¹¦");
+					userBean.setResStatus("success");
+					userBean.setResMsg("ä¿®æ”¹æˆåŠŸ");
+					rs = stat.executeQuery(sql_que);
+					while (rs.next()) {
+						userBean.setUserId(rs.getInt("user_id") + "");
+						userBean.setAccount(rs.getString("account"));
+						userBean.setPassword(rs.getString("password"));
+						userBean.setRealName(rs.getString("real_name"));
+						userBean.setIdNumber(rs.getString("id_number"));
+					}
 				} else {
-					resultBean.setResStatus("failed");
-					resultBean.setResMsg("×¢²áÊ§°Ü");
+					userBean.setResStatus("failed");
+					userBean.setResMsg("ä¿®æ”¹å¤±è´¥");
 				}
-			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 
-		// Í¨¹ıÊä³öÁ÷°ÑÒµÎñÂß¼­µÄ½á¹ûÊä³ö
+		// é€šè¿‡è¾“å‡ºæµæŠŠä¸šåŠ¡é€»è¾‘çš„ç»“æœè¾“å‡º
 		Gson gson = new Gson();
-		String result = gson.toJson(resultBean);
+		String result = gson.toJson(userBean);
 		out.print(result);
 		out.flush();
 		out.close();
