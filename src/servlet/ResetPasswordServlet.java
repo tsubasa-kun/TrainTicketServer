@@ -99,7 +99,7 @@ public class ResetPasswordServlet extends HttpServlet {
 				}
 			} else {
 				userBean.setResStatus("failed");
-				userBean.setResMsg("修改失败");
+				userBean.setResMsg("原密码错误");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
