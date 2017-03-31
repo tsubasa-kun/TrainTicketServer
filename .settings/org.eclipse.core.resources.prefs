@@ -1,2 +1,6 @@
 eclipse.preferences.version=1
+encoding//src/bean=UTF-8
 encoding//src/db/DBHelper.java=UTF-8
+encoding//src/servlet/LoginServlet.java=UTF-8
+encoding//src/servlet/RegisterServlet.java=GBK
+encoding/<project>=UTF-8

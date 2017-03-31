@@ -2,26 +2,26 @@ package db;
 
 import java.sql.*;
 
-public class DBHelper {	
+public class DBHelper {
 	private String dbUrl = "jdbc:mysql://localhost:3306/train_ticket_db?useUnicode=true&characterEncoding=utf-8";
 	private String dbUser = "root";
 	private String dbPassword = "root";
 	private String jdbcName = "com.mysql.jdbc.Driver";
-	
-	public static final String TABLE_USERS = "users";  
-    public static final String TABLE_ORDERS = "orders";  
-	
-	//连接数据库
-	public Connection getConn(){
+
+	public static final String TABLE_USERS = "users";
+	public static final String TABLE_ORDERS = "orders";
+
+	// 连接数据库
+	public Connection getConnect() {
 		Connection conn = null;
-		try{
+		try {
 			Class.forName(jdbcName);
+		} catch (Exception e) {
 		}
-		catch(Exception e){}
-		try{
-			conn=DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+		try {
+			conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+		} catch (SQLException ex) {
 		}
-		catch(SQLException ex){}
-		return conn;		
+		return conn;
 	}
 }
