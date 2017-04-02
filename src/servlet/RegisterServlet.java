@@ -84,6 +84,8 @@ public class RegisterServlet extends HttpServlet {
 		Statement stat = null;
 		ResultSet rs = null;
 		ResultBean resultBean = new ResultBean();
+		resultBean.setResStatus("failed");
+		resultBean.setResMsg("注册失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
@@ -103,6 +105,8 @@ public class RegisterServlet extends HttpServlet {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			resultBean.setResStatus("failed");
+			resultBean.setResMsg("注册失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出

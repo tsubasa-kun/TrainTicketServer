@@ -71,9 +71,9 @@ public class BuyTicketServlet extends HttpServlet {
 		// 获取参数
 		String orderId = request.getParameter("orderId");
 		String trainNo = request.getParameter("trainNo");
-		String from = request.getParameter("from");
+		String fromStation = request.getParameter("fromStation");
 		String startTime = request.getParameter("startTime");
-		String to = request.getParameter("to");
+		String toStation = request.getParameter("toStation");
 		String endTime = request.getParameter("endTime");
 		String date = request.getParameter("date");
 		String seat = request.getParameter("seat");
@@ -82,16 +82,16 @@ public class BuyTicketServlet extends HttpServlet {
 		String money = request.getParameter("money");
 
 		// 执行数据库操作
-		String sql_ins = "insert into orders(order_id, train_no, from, start_time, to, end_time, date, seat, carriage, seat_no, money) values('"
+		String sql_ins = "insert into orders(order_id, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money) values('"
 				+ orderId
 				+ "', '"
 				+ trainNo
 				+ "', '"
-				+ from
+				+ fromStation
 				+ "', '"
 				+ startTime
 				+ "', '"
-				+ to
+				+ toStation
 				+ "', '"
 				+ endTime
 				+ "', '"
@@ -106,10 +106,11 @@ public class BuyTicketServlet extends HttpServlet {
 				+ money + "')";
 		Statement stat = null;
 		ResultBean resultBean = new ResultBean();
+		resultBean.setResStatus("failed");
+		resultBean.setResMsg("支付失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-
 			int row = stat.executeUpdate(sql_ins);
 			if (row == 1) {
 				resultBean.setResStatus("success");
@@ -120,6 +121,8 @@ public class BuyTicketServlet extends HttpServlet {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			resultBean.setResStatus("failed");
+			resultBean.setResMsg("支付失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出

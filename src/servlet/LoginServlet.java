@@ -94,6 +94,8 @@ public class LoginServlet extends HttpServlet {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			userBean.setResStatus("failed");
+			userBean.setResMsg("登录失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出

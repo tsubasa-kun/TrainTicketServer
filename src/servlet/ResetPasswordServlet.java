@@ -82,6 +82,8 @@ public class ResetPasswordServlet extends HttpServlet {
 		Statement stat = null;
 		ResultSet rs = null;
 		UserBean userBean = new UserBean();
+		userBean.setResStatus("failed");
+		userBean.setResMsg("修改失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
@@ -103,6 +105,8 @@ public class ResetPasswordServlet extends HttpServlet {
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			userBean.setResStatus("failed");
+			userBean.setResMsg("修改失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出
