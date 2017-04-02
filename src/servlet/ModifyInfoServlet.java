@@ -75,8 +75,8 @@ public class ModifyInfoServlet extends HttpServlet {
 		String idNumber = request.getParameter("idNumber");
 
 		// 执行数据库操作
-		String sql_upd = "update users set real_name = '" + realName + "',id_number = '" + idNumber + "' where account = '" + account + "'";
-		String sql_que = "select * from users where account = '" + account + "'";
+		String sql_upd = "UPDATE users SET real_name = '" + realName + "',id_number = '" + idNumber + "' WHERE account = '" + account + "'";
+		String sql_que = "SELECT * FROM users WHERE account = '" + account + "'";
 		Statement stat = null;
 		ResultSet rs = null;
 		UserBean userBean = new UserBean();

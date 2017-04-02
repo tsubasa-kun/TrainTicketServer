@@ -74,10 +74,10 @@ public class ResetPasswordServlet extends HttpServlet {
 		String newPassword = request.getParameter("newPassword");
 
 		// 执行数据库操作
-		String sql_upd = "update users set password = '" + newPassword
-				+ "' where account = '" + account + "' and password = '"
+		String sql_upd = "UPDATE users SET password = '" + newPassword
+				+ "' WHERE account = '" + account + "' AND password = '"
 				+ oldPassword + "'";
-		String sql_que = "select * from users where account = '" + account
+		String sql_que = "SELECT * FROM users WHERE account = '" + account
 				+ "'";
 		Statement stat = null;
 		ResultSet rs = null;

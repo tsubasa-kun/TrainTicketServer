@@ -71,9 +71,9 @@ public class RegisterServlet extends HttpServlet {
 		String idNumber = request.getParameter("idNumber");
 
 		// 执行数据库操作
-		String sql_que = "select * from users where account = '" + account
+		String sql_que = "SELECT * FROM users WHERE account = '" + account
 				+ "'";
-		String sql_ins = "insert into users(account, password, real_name, id_number) values('"
+		String sql_ins = "INSERT INTO users(account, password, real_name, id_number) VALUES('"
 				+ account
 				+ "', '"
 				+ password

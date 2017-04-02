@@ -81,9 +81,10 @@ public class BuyTicketServlet extends HttpServlet {
 		String carriage = request.getParameter("carriage");
 		String seatNo = request.getParameter("seatNo");
 		String money = request.getParameter("money");
+		String type = request.getParameter("type");
 
 		// 执行数据库操作
-		String sql_ins = "insert into orders(order_id, account, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money) values('"
+		String sql_ins = "INSERT INTO orders(order_id, account, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money, type) VALUES('"
 				+ orderId
 				+ "', '"
 				+ account
@@ -106,7 +107,9 @@ public class BuyTicketServlet extends HttpServlet {
 				+ "', '"
 				+ seatNo
 				+ "', '"
-				+ money + "')";
+				+ money
+				+ "', '"
+				+ type + "')";
 		Statement stat = null;
 		ResultBean resultBean = new ResultBean();
 		resultBean.setResStatus("failed");

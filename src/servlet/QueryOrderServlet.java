@@ -15,19 +15,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import bean.OrderBean;
-import bean.UserBean;
+import bean.OrderListBean;
 
 import com.google.gson.Gson;
 
 import db.DBHelper;
 
 /**
- * 查询未出行订单Servlet
+ * 查询历史订单Servlet
  * 
  * @author cookie
  * 
  */
-public class QueryOrderNowServlet extends HttpServlet {
+public class QueryOrderServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -73,28 +73,64 @@ public class QueryOrderNowServlet extends HttpServlet {
 
 		// 获取参数
 		String account = request.getParameter("account");
-		String realName = request.getParameter("realName");
-		String idNumber = request.getParameter("idNumber");
+		int offset = Integer.parseInt(request.getParameter("offset"));
+		String timestamp = request.getParameter("timestamp");
+		int type = Integer.parseInt(request.getParameter("type"));
+		String op = "<";
+		switch (type) {
+		default:
+		case 0://ORDER_NOW
+			op = ">";
+			break;
+		case 1://ORDER_OLD
+			op = "<";
+			break;
+		}
 
 		// 执行数据库操作
-		String sql_que = "select * from users where account = '" + account
-				+ "'";
+		String sql_que = "SELECT * FROM orders WHERE account = '" + account
+				+ "' AND order_id " + op + " '" + timestamp
+				+ "' ORDER BY order_id ASC LIMIT 10 OFFSET " + (offset * 10);
 		Statement stat = null;
 		ResultSet rs = null;
-		List<OrderBean> orders = new ArrayList<OrderBean>() ;
+		OrderListBean orderListBean = new OrderListBean();
+		orderListBean.setResStatus("success");
+		orderListBean.setResMsg("");
+		List<OrderBean> orders = new ArrayList<OrderBean>();
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
 			rs = stat.executeQuery(sql_que);
 			while (rs.next()) {
 				OrderBean orderBean = new OrderBean();
+				orderBean.setOrderId(rs.getString("order_id"));
+				orderBean.setAccount(rs.getString("account"));
+				orderBean.setTrainNo(rs.getString("train_no"));
+				orderBean.setFromStation(rs.getString("from_station"));
+				orderBean.setStartTime(rs.getString("start_time"));
+				orderBean.setToStation(rs.getString("to_station"));
+				orderBean.setEndTime(rs.getString("end_time"));
+				orderBean.setDate(rs.getString("date"));
+				orderBean.setSeat(rs.getString("seat"));
+				orderBean.setCarriage(rs.getString("carriage"));
+				orderBean.setSeatNo(rs.getString("seat_no"));
+				orderBean.setMoney(rs.getString("money"));
+				orderBean.setType(rs.getString("type"));
+				orders.add(orderBean);
+				orderListBean.setResStatus("success");
+				orderListBean.setResMsg("查询成功");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			orderListBean.setResStatus("failer");
+			orderListBean.setResMsg("查询失败");
 		}
 
+		orderListBean.setOrders(orders);
+		Gson gson = new Gson();
+		String result = gson.toJson(orderListBean);
 		// 通过输出流把业务逻辑的结果输出
-		out.print(orders);
+		out.print(result);
 		out.flush();
 		out.close();
 	}

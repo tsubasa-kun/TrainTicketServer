@@ -72,8 +72,8 @@ public class LoginServlet extends HttpServlet {
 		String password = request.getParameter("password");
 
 		// 执行数据库操作
-		String sql_que = "select * from users where account = '" + account
-				+ "' and password = '" + password + "'";
+		String sql_que = "SELECT * FROM users WHERE account = '" + account
+				+ "' AND password = '" + password + "'";
 		Statement stat = null;
 		ResultSet rs = null;
 		UserBean userBean = new UserBean();
