@@ -6,25 +6,28 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.ResultBean;
+import bean.OrderBean;
+import bean.UserBean;
 
 import com.google.gson.Gson;
 
 import db.DBHelper;
 
 /**
- * 购买车票Servlet
+ * 查询未出行订单Servlet
  * 
  * @author cookie
  * 
  */
-public class BuyTicketServlet extends HttpServlet {
+public class QueryOrderNowServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -69,69 +72,29 @@ public class BuyTicketServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String orderId = request.getParameter("orderId");
 		String account = request.getParameter("account");
-		String trainNo = request.getParameter("trainNo");
-		String fromStation = request.getParameter("fromStation");
-		String startTime = request.getParameter("startTime");
-		String toStation = request.getParameter("toStation");
-		String endTime = request.getParameter("endTime");
-		String date = request.getParameter("date");
-		String seat = request.getParameter("seat");
-		String carriage = request.getParameter("carriage");
-		String seatNo = request.getParameter("seatNo");
-		String money = request.getParameter("money");
+		String realName = request.getParameter("realName");
+		String idNumber = request.getParameter("idNumber");
 
 		// 执行数据库操作
-		String sql_ins = "insert into orders(order_id, account, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money) values('"
-				+ orderId
-				+ "', '"
-				+ account
-				+ "', '"
-				+ trainNo
-				+ "', '"
-				+ fromStation
-				+ "', '"
-				+ startTime
-				+ "', '"
-				+ toStation
-				+ "', '"
-				+ endTime
-				+ "', '"
-				+ date
-				+ "', '"
-				+ seat
-				+ "', '"
-				+ carriage
-				+ "', '"
-				+ seatNo
-				+ "', '"
-				+ money + "')";
+		String sql_que = "select * from users where account = '" + account
+				+ "'";
 		Statement stat = null;
-		ResultBean resultBean = new ResultBean();
-		resultBean.setResStatus("failed");
-		resultBean.setResMsg("支付失败");
+		ResultSet rs = null;
+		List<OrderBean> orders = new ArrayList<OrderBean>() ;
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_ins);
-			if (row == 1) {
-				resultBean.setResStatus("success");
-				resultBean.setResMsg("支付成功");
-			} else {
-				resultBean.setResStatus("failed");
-				resultBean.setResMsg("支付失败");
+			rs = stat.executeQuery(sql_que);
+			while (rs.next()) {
+				OrderBean orderBean = new OrderBean();
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			resultBean.setResStatus("failed");
-			resultBean.setResMsg("支付失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出
-		Gson gson = new Gson();
-		String result = gson.toJson(resultBean);
-		out.print(result);
+		out.print(orders);
 		out.flush();
 		out.close();
 	}

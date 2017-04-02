@@ -8,6 +8,7 @@ package bean;
  */
 public class OrderBean extends ResultBean {
 	private String orderId;// 订单ID
+	private String account;// 账户
 	private String trainNo;// 车次
 	private String fromStation;// 出发地
 	private String startTime;// 出发时间
@@ -105,5 +106,13 @@ public class OrderBean extends ResultBean {
 
 	public void setToStation(String toStation) {
 		this.toStation = toStation;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 }
