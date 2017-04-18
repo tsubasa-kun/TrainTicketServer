@@ -79,18 +79,28 @@ public class QueryOrderServlet extends HttpServlet {
 		String op = "<";
 		switch (type) {
 		default:
-		case 0://ORDER_NOW
+		case 0:// ORDER_NOW
 			op = ">";
 			break;
-		case 1://ORDER_OLD
+		case 1:// ORDER_OLD
 			op = "<";
 			break;
 		}
-
-		// 执行数据库操作
+		
+		//SQL语句
 		String sql_que = "SELECT * FROM orders WHERE account = '" + account
 				+ "' AND order_id " + op + " '" + timestamp
-				+ "' ORDER BY order_id ASC LIMIT 10 OFFSET " + (offset * 10);
+				+ "' AND status = '1' ORDER BY order_id ASC LIMIT 10 OFFSET "
+				+ (offset * 10);
+		// ORDER_UNFINISHED
+		if (type == 2) {
+			sql_que = "SELECT * FROM orders WHERE account = '" + account
+					+ "' AND order_id > '" + timestamp
+					+ "' AND status = '0' ORDER BY order_id ASC LIMIT 10 OFFSET "
+					+ (offset * 10);
+		}
+
+		// 执行数据库操作
 		Statement stat = null;
 		ResultSet rs = null;
 		OrderListBean orderListBean = new OrderListBean();
