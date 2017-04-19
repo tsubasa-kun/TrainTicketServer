@@ -7,6 +7,7 @@ package bean;
  * 
  */
 public class OrderBean extends ResultBean {
+	private int id;//ID
 	private String orderId;//订单ID
     private String account;//账户
     private String trainNo;//车次
@@ -21,7 +22,15 @@ public class OrderBean extends ResultBean {
     private String money;//票价
     private String type;//车票类型
 
-    public String getCarriage() {
+    public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getCarriage() {
         return carriage;
     }
 

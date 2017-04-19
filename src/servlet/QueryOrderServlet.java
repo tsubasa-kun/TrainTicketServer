@@ -96,7 +96,7 @@ public class QueryOrderServlet extends HttpServlet {
 		if (type == 2) {
 			sql_que = "SELECT * FROM orders WHERE account = '" + account
 					+ "' AND order_id > '" + timestamp
-					+ "' AND status = '0' ORDER BY order_id ASC LIMIT 10 OFFSET "
+					+ "' AND pay_status = '0' ORDER BY order_id ASC LIMIT 10 OFFSET "
 					+ (offset * 10);
 		}
 
@@ -113,6 +113,7 @@ public class QueryOrderServlet extends HttpServlet {
 			rs = stat.executeQuery(sql_que);
 			while (rs.next()) {
 				OrderBean orderBean = new OrderBean();
+				orderBean.setId(rs.getInt("id"));
 				orderBean.setOrderId(rs.getString("order_id"));
 				orderBean.setAccount(rs.getString("account"));
 				orderBean.setTrainNo(rs.getString("train_no"));

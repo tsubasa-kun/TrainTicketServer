@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.OrderBean;
 import bean.ResultBean;
 
 import com.google.gson.Gson;
@@ -24,7 +25,7 @@ import db.DBHelper;
  * @author cookie
  * 
  */
-public class BuyTicketServlet extends HttpServlet {
+public class OrderTicketServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -109,34 +110,38 @@ public class BuyTicketServlet extends HttpServlet {
 				+ "', '"
 				+ money
 				+ "', '"
-				+ type + "')";
+				+ type
+				+ "')";
 		Statement stat = null;
-		ResultBean resultBean = new ResultBean();
-		resultBean.setResStatus("failed");
-		resultBean.setResMsg("支付失败");
+		OrderBean orderBean = new OrderBean();
+		orderBean.setResStatus("failed");
+		orderBean.setResMsg("生成订单失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
 			int row = stat.executeUpdate(sql_ins);
+			ResultSet rs = stat.getGeneratedKeys(); // 获取结果
 			if (row == 1) {
-				resultBean.setResStatus("success");
-				resultBean.setResMsg("支付成功");
+				orderBean.setResStatus("success");
+				orderBean.setResMsg("生成订单成功");
+				if (rs.next()) {
+					orderBean.setId(rs.getInt(1));// 取得ID
+				}
 			} else {
-				resultBean.setResStatus("failed");
-				resultBean.setResMsg("支付失败");
+				orderBean.setResStatus("failed");
+				orderBean.setResMsg("生成订单失败");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			resultBean.setResStatus("failed");
-			resultBean.setResMsg("支付失败");
+			orderBean.setResStatus("failed");
+			orderBean.setResMsg("生成订单失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出
 		Gson gson = new Gson();
-		String result = gson.toJson(resultBean);
+		String result = gson.toJson(orderBean);
 		out.print(result);
 		out.flush();
 		out.close();
 	}
-
 }
