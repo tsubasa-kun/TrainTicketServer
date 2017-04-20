@@ -120,10 +120,10 @@ public class OrderTicketServlet extends HttpServlet {
 		try {
 			stat = conn.createStatement();
 			int row = stat.executeUpdate(sql_ins);
-			ResultSet rs = stat.getGeneratedKeys(); // 获取结果
 			if (row == 1) {
 				orderBean.setResStatus("success");
 				orderBean.setResMsg("生成订单成功");
+				ResultSet rs = stat.getGeneratedKeys(); // 获取结果
 				if (rs.next()) {
 					orderBean.setId(rs.getInt(1));// 取得ID
 				}

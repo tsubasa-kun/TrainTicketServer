@@ -96,8 +96,20 @@ public class RegisterServlet extends HttpServlet {
 			} else {
 				int row = stat.executeUpdate(sql_ins);
 				if (row == 1) {
-					resultBean.setResStatus("success");
-					resultBean.setResMsg("注册成功");
+					rs = stat.getGeneratedKeys(); // 获取结果
+					if (rs.next()) {
+						String sql_ins2 = "INSERT INTO members(user_id, member_real_name, member_id_number) VALUES('"
+								+ rs.getInt(1)
+								+ "', '"
+								+ realName
+								+ "', '"
+								+ idNumber + "')";
+						row = stat.executeUpdate(sql_ins2);
+						if (row == 1) {
+							resultBean.setResStatus("success");
+							resultBean.setResMsg("注册成功");
+						}
+					}
 				} else {
 					resultBean.setResStatus("failed");
 					resultBean.setResMsg("注册失败");
