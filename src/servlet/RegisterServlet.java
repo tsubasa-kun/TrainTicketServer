@@ -71,8 +71,10 @@ public class RegisterServlet extends HttpServlet {
 		String idNumber = request.getParameter("idNumber");
 
 		// 执行数据库操作
+		//查询
 		String sql_que = "SELECT * FROM users WHERE account = '" + account
 				+ "'";
+		//添加进users
 		String sql_ins = "INSERT INTO users(account, password, real_name, id_number) VALUES('"
 				+ account
 				+ "', '"
@@ -98,6 +100,7 @@ public class RegisterServlet extends HttpServlet {
 				if (row == 1) {
 					rs = stat.getGeneratedKeys(); // 获取结果
 					if (rs.next()) {
+						//添加进联系人
 						String sql_ins2 = "INSERT INTO members(user_id, member_real_name, member_id_number) VALUES('"
 								+ rs.getInt(1)
 								+ "', '"
