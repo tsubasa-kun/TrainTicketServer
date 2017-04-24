@@ -70,13 +70,20 @@ public class ModifyInfoServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String account = request.getParameter("account");
+		String userId = request.getParameter("userId");
 		String realName = request.getParameter("realName");
 		String idNumber = request.getParameter("idNumber");
 
 		// 执行数据库操作
-		String sql_upd = "UPDATE users SET real_name = '" + realName + "',id_number = '" + idNumber + "' WHERE account = '" + account + "'";
-		String sql_que = "SELECT * FROM users WHERE account = '" + account + "'";
+		String sql_upd1 = "UPDATE users SET real_name = '" + realName
+				+ "',id_number = '" + idNumber + "' WHERE user_id = '" + userId
+				+ "'";
+		String sql_upd2 = "UPDATE members a,(SELECT id FROM members WHERE user_id = '"
+				+ userId
+				+ "' limit 1) b SET member_real_name = '"
+				+ realName
+				+ "',member_id_number = '" + idNumber + "' WHERE a.id = b.id";
+		String sql_que = "SELECT * FROM users WHERE user_id = '" + userId + "'";
 		Statement stat = null;
 		ResultSet rs = null;
 		UserBean userBean = new UserBean();
@@ -85,8 +92,10 @@ public class ModifyInfoServlet extends HttpServlet {
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-				int row = stat.executeUpdate(sql_upd);
-				if (row == 1) {
+			int row = stat.executeUpdate(sql_upd1);
+			if (row == 1) {
+				int row2 = stat.executeUpdate(sql_upd2);
+				if (row2 == 1) {
 					userBean.setResStatus("success");
 					userBean.setResMsg("修改成功");
 					rs = stat.executeQuery(sql_que);
@@ -97,10 +106,11 @@ public class ModifyInfoServlet extends HttpServlet {
 						userBean.setRealName(rs.getString("real_name"));
 						userBean.setIdNumber(rs.getString("id_number"));
 					}
-				} else {
-					userBean.setResStatus("failed");
-					userBean.setResMsg("修改失败");
 				}
+			} else {
+				userBean.setResStatus("failed");
+				userBean.setResMsg("修改失败");
+			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			userBean.setResStatus("failed");
