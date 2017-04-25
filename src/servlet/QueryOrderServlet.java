@@ -90,7 +90,7 @@ public class QueryOrderServlet extends HttpServlet {
 		//SQL语句
 		String sql_que = "SELECT * FROM orders WHERE account = '" + account
 				+ "' AND order_id " + op + " '" + timestamp
-				+ "' AND status = '1' ORDER BY order_id ASC LIMIT 10 OFFSET "
+				+ "' AND pay_status = '1' ORDER BY order_id ASC LIMIT 10 OFFSET "
 				+ (offset * 10);
 		// ORDER_UNFINISHED
 		if (type == 2) {
