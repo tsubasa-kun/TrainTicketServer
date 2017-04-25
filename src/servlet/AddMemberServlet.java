@@ -70,7 +70,7 @@ public class AddMemberServlet extends HttpServlet {
 		// 执行数据库操作
 		// 查询
 		String sql_que = "SELECT * FROM members WHERE member_id_number = '"
-				+ idNumber + "'";
+				+ idNumber + "' AND user_id = '" + userId + "'";
 		// 添加进members
 		String sql_ins = "INSERT INTO members(user_id, member_real_name, member_id_number) VALUES('"
 				+ userId + "', '" + realName + "', '" + idNumber + "')";
