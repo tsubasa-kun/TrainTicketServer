@@ -1,18 +1,22 @@
 package servlet;
 
+import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.MemberListBean;
 import bean.OrderBean;
+import bean.OrderListBean;
 import bean.ResultBean;
 
 import com.google.gson.Gson;
@@ -69,9 +73,13 @@ public class OrderTicketServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 
+		Gson gson = new Gson();
+
 		// 获取参数
 		String orderId = request.getParameter("orderId");
 		String account = request.getParameter("account");
+		MemberListBean members = gson.fromJson(request.getParameter("members"),
+				MemberListBean.class);
 		String trainNo = request.getParameter("trainNo");
 		String fromStation = request.getParameter("fromStation");
 		String startTime = request.getParameter("startTime");
@@ -84,64 +92,87 @@ public class OrderTicketServlet extends HttpServlet {
 		String money = request.getParameter("money");
 		String type = request.getParameter("type");
 
-		// 执行数据库操作
-		String sql_ins = "INSERT INTO orders(order_id, account, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money, type) VALUES('"
-				+ orderId
-				+ "', '"
-				+ account
-				+ "', '"
-				+ trainNo
-				+ "', '"
-				+ fromStation
-				+ "', '"
-				+ startTime
-				+ "', '"
-				+ toStation
-				+ "', '"
-				+ endTime
-				+ "', '"
-				+ date
-				+ "', '"
-				+ seat
-				+ "', '"
-				+ carriage
-				+ "', '"
-				+ seatNo
-				+ "', '"
-				+ money
-				+ "', '"
-				+ type
-				+ "')";
-		Statement stat = null;
-		OrderBean orderBean = new OrderBean();
-		orderBean.setResStatus("failed");
-		orderBean.setResMsg("生成订单失败");
-		Connection conn = new DBHelper().getConnect();
-		try {
-			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_ins);
-			if (row == 1) {
-				orderBean.setResStatus("success");
-				orderBean.setResMsg("生成订单成功");
-				ResultSet rs = stat.getGeneratedKeys(); // 获取结果
-				if (rs.next()) {
-					orderBean.setId(rs.getInt(1));// 取得ID
+		int n = 0;
+		OrderListBean orderListBean = new OrderListBean();
+		List<OrderBean> orders = new ArrayList<OrderBean>();
+		for (int i = 0; i < members.getMembers().size(); i++) {
+			// 执行数据库操作
+			String sql_ins = "INSERT INTO orders(order_id, account, real_name, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money, type) VALUES('"
+					+ orderId
+					+ "', '"
+					+ account
+					+ "', '"
+					+ members.getMembers().get(i).getMemberRealName()
+					+ "', '"
+					+ trainNo
+					+ "', '"
+					+ fromStation
+					+ "', '"
+					+ startTime
+					+ "', '"
+					+ toStation
+					+ "', '"
+					+ endTime
+					+ "', '"
+					+ date
+					+ "', '"
+					+ seat
+					+ "', '"
+					+ carriage
+					+ "', '"
+					+ (seatNo + i)
+					+ "', '" + money + "', '" + type + "')";
+			Statement stat = null;
+			OrderBean orderBean = new OrderBean();
+			orderBean.setOrderId(orderId);
+			orderBean.setAccount(account);
+			orderBean.setRealName(members.getMembers().get(i).getMemberRealName());
+			orderBean.setTrainNo(trainNo);
+			orderBean.setFromStation(fromStation);
+			orderBean.setStartTime(startTime);
+			orderBean.setToStation(toStation);
+			orderBean.setEndTime(endTime);
+			orderBean.setDate(date);
+			orderBean.setSeat(seat);
+			orderBean.setCarriage(carriage);
+			orderBean.setSeatNo(seatNo + i);
+			orderBean.setMoney(money);
+			orderBean.setType(type);
+			orderBean.setResStatus("failed");
+			orderBean.setResMsg("生成订单失败");
+			Connection conn = new DBHelper().getConnect();
+			try {
+				stat = conn.createStatement();
+				int row = stat.executeUpdate(sql_ins);
+				if (row == 1) {
+					orderBean.setResStatus("success");
+					orderBean.setResMsg("生成订单成功");
+					ResultSet rs = stat.getGeneratedKeys(); // 获取结果
+					if (rs.next()) {
+						orderBean.setId(rs.getInt(1));// 取得ID
+					}
+				} else {
+					orderBean.setResStatus("failed");
+					orderBean.setResMsg("生成订单失败");
 				}
-			} else {
+			} catch (SQLException ex) {
+				ex.printStackTrace();
 				orderBean.setResStatus("failed");
 				orderBean.setResMsg("生成订单失败");
 			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			orderBean.setResStatus("failed");
-			orderBean.setResMsg("生成订单失败");
+			orders.add(orderBean);
+			n++;
 		}
-
-		// 通过输出流把业务逻辑的结果输出
-		Gson gson = new Gson();
-		String result = gson.toJson(orderBean);
-		out.print(result);
-		out.flush();
-		out.close();
+		
+		if (n == members.getMembers().size()) {
+			// 通过输出流把业务逻辑的结果输出
+			orderListBean.setOrders(orders);
+			orderListBean.setResMsg(orders.get(0).getResMsg());
+			orderListBean.setResStatus(orders.get(0).getResStatus());
+			String result = gson.toJson(orderListBean);
+			out.print(result);
+			out.flush();
+			out.close();
+		}
 	}
 }

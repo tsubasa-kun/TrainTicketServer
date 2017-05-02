@@ -5,12 +5,16 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.OrderBean;
+import bean.OrderListBean;
 import bean.ResultBean;
 
 import com.google.gson.Gson;
@@ -61,38 +65,45 @@ public class PayTicketServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 
-		// 获取参数
-		String id = request.getParameter("id");
+		Gson gson = new Gson();
 
-		// 执行数据库操作
-		String sql_upd = "UPDATE orders SET pay_status = '1' WHERE id = '" + id + "'";
-		Statement stat = null;
+		// 获取参数
+		OrderListBean orders = gson.fromJson(request.getParameter("orders"),
+				OrderListBean.class);
+		int n = 0;
 		ResultBean resultBean = new ResultBean();
-		resultBean.setResStatus("failed");
-		resultBean.setResMsg("支付失败");
-		Connection conn = new DBHelper().getConnect();
-		try {
-			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_upd);
-			if (row == 1) {
-				resultBean.setResStatus("success");
-				resultBean.setResMsg("支付成功");
-			} else {
+		for (int i = 0; i < orders.getOrders().size(); i++) {
+			// 执行数据库操作
+			String sql_upd = "UPDATE orders SET pay_status = '1' WHERE id = '"
+					+ orders.getOrders().get(i).getId() + "'";
+			Statement stat = null;
+			resultBean.setResStatus("failed");
+			resultBean.setResMsg("支付失败");
+			Connection conn = new DBHelper().getConnect();
+			try {
+				stat = conn.createStatement();
+				int row = stat.executeUpdate(sql_upd);
+				if (row == 1) {
+					resultBean.setResStatus("success");
+					resultBean.setResMsg("支付成功");
+				} else {
+					resultBean.setResStatus("failed");
+					resultBean.setResMsg("支付失败");
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
 				resultBean.setResStatus("failed");
 				resultBean.setResMsg("支付失败");
 			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			resultBean.setResStatus("failed");
-			resultBean.setResMsg("支付失败");
+			n++;
 		}
-
-		// 通过输出流把业务逻辑的结果输出
-		Gson gson = new Gson();
-		String result = gson.toJson(resultBean);
-		out.print(result);
-		out.flush();
-		out.close();
+		
+		if (n == orders.getOrders().size()) {
+			// 通过输出流把业务逻辑的结果输出
+			String result = gson.toJson(resultBean);
+			out.print(result);
+			out.flush();
+			out.close();
+		}
 	}
-
 }

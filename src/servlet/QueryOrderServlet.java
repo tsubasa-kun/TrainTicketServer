@@ -116,6 +116,7 @@ public class QueryOrderServlet extends HttpServlet {
 				orderBean.setId(rs.getInt("id"));
 				orderBean.setOrderId(rs.getString("order_id"));
 				orderBean.setAccount(rs.getString("account"));
+				orderBean.setRealName(rs.getString("real_name"));
 				orderBean.setTrainNo(rs.getString("train_no"));
 				orderBean.setFromStation(rs.getString("from_station"));
 				orderBean.setStartTime(rs.getString("start_time"));

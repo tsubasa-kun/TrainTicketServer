@@ -10,6 +10,7 @@ public class OrderBean extends ResultBean {
 	private int id;//ID
 	private String orderId;//订单ID
     private String account;//账户
+    private String realName;//真实姓名
     private String trainNo;//车次
     private String fromStation;//出发地
     private String startTime;//出发时间
@@ -21,6 +22,14 @@ public class OrderBean extends ResultBean {
     private String seatNo;// 座位号
     private String money;//票价
     private String type;//车票类型
+    
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
 
     public int getId() {
 		return id;
