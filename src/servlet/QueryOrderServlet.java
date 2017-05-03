@@ -77,27 +77,38 @@ public class QueryOrderServlet extends HttpServlet {
 		String timestamp = request.getParameter("timestamp");
 		int type = Integer.parseInt(request.getParameter("type"));
 		String op = "<";
+		String sql_que = "SELECT * FROM orders WHERE account = '"
+				+ account
+				+ "' AND order_id "
+				+ op
+				+ " '"
+				+ timestamp
+				+ "' AND pay_status = '1' ORDER BY order_id ASC LIMIT 10 OFFSET "
+				+ (offset * 10);
 		switch (type) {
 		default:
 		case 0:// ORDER_NOW
-			op = ">";
+			sql_que = "SELECT * FROM orders WHERE account = '"
+					+ account
+					+ "' AND order_id > '"
+					+ timestamp
+					+ "' AND pay_status = '1' ORDER BY order_id ASC LIMIT 10 OFFSET "
+					+ (offset * 10);
 			break;
 		case 1:// ORDER_OLD
-			op = "<";
-			break;
-		}
-		
-		//SQL语句
-		String sql_que = "SELECT * FROM orders WHERE account = '" + account
-				+ "' AND order_id " + op + " '" + timestamp
-				+ "' AND pay_status = '1' ORDER BY order_id ASC LIMIT 10 OFFSET "
-				+ (offset * 10);
-		// ORDER_UNFINISHED
-		if (type == 2) {
 			sql_que = "SELECT * FROM orders WHERE account = '" + account
-					+ "' AND order_id > '" + timestamp
+					+ "' AND order_id < '" + timestamp
+					+ "' ORDER BY order_id ASC LIMIT 10 OFFSET "
+					+ (offset * 10);
+			break;
+		case 2:// ORDER_UNFINISHED
+			sql_que = "SELECT * FROM orders WHERE account = '"
+					+ account
+					+ "' AND order_id > '"
+					+ timestamp
 					+ "' AND pay_status = '0' ORDER BY order_id ASC LIMIT 10 OFFSET "
 					+ (offset * 10);
+			break;
 		}
 
 		// 执行数据库操作
