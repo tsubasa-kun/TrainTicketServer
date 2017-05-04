@@ -91,11 +91,30 @@ public class OrderTicketServlet extends HttpServlet {
 		String seatNo = request.getParameter("seatNo");
 		String money = request.getParameter("money");
 		String type = request.getParameter("type");
+		String id = request.getParameter("id");
+		
+		if (id != null) {
+			// 执行数据库操作
+			//改签把此票的status改成3，orderID改成0
+			String sql_upd = "UPDATE orders SET order_id = '0', pay_status = '3' WHERE id = '" + id + "'";
+			Statement stat = null;
+			Connection conn = new DBHelper().getConnect();
+			try {
+				stat = conn.createStatement();
+				stat.executeUpdate(sql_upd);
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
 
 		int n = 0;
 		OrderListBean orderListBean = new OrderListBean();
 		List<OrderBean> orders = new ArrayList<OrderBean>();
 		for (int i = 0; i < members.getMembers().size(); i++) {
+			String temp_seatNo = "无";
+			if (!seatNo.equals("无")) {
+				temp_seatNo = (Integer.parseInt(seatNo) + i) + "";
+			}
 			// 执行数据库操作
 			String sql_ins = "INSERT INTO orders(order_id, account, real_name, train_no, from_station, start_time, to_station, end_time, date, seat, carriage, seat_no, money, type) VALUES('"
 					+ orderId
@@ -120,7 +139,7 @@ public class OrderTicketServlet extends HttpServlet {
 					+ "', '"
 					+ carriage
 					+ "', '"
-					+ (seatNo + i)
+					+ temp_seatNo
 					+ "', '" + money + "', '" + type + "')";
 			Statement stat = null;
 			OrderBean orderBean = new OrderBean();
@@ -135,7 +154,7 @@ public class OrderTicketServlet extends HttpServlet {
 			orderBean.setDate(date);
 			orderBean.setSeat(seat);
 			orderBean.setCarriage(carriage);
-			orderBean.setSeatNo(seatNo + i);
+			orderBean.setSeatNo(temp_seatNo);
 			orderBean.setMoney(money);
 			orderBean.setType(type);
 			orderBean.setResStatus("failed");
