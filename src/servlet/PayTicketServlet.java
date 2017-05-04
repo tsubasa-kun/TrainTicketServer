@@ -21,6 +21,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 支付车票Servlet
+ * @author cookie
+ *
+ */
 public class PayTicketServlet extends HttpServlet {
 
 	/**

@@ -6,29 +6,26 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.MemberBean;
-import bean.MemberListBean;
-import bean.OrderBean;
-import bean.OrderListBean;
+import bean.ResultBean;
+import bean.UserBean;
 
 import com.google.gson.Gson;
 
 import db.DBHelper;
 
 /**
- * 查询联系人Servlet
+ * 退票Servlet
+ * 
  * @author cookie
- *
+ * 
  */
-public class QueryMemberServlet extends HttpServlet {
+public class TuiTicketServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -73,42 +70,36 @@ public class QueryMemberServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String userId = request.getParameter("userId");
-		
-		//SQL语句
-		String sql_que = "SELECT * FROM members WHERE user_id = '" + userId + "'";
+		String id = request.getParameter("id");
 
 		// 执行数据库操作
+        //退票把status改成2，orderID改成0
+		String sql_upd = "UPDATE orders SET order_id = '0', pay_status = '2' WHERE id = '" + id + "'";
 		Statement stat = null;
 		ResultSet rs = null;
-		MemberListBean memberListBean = new MemberListBean();
-		memberListBean.setResStatus("success");
-		memberListBean.setResMsg("");
-		List<MemberBean> members = new ArrayList<MemberBean>();
+		ResultBean resultBean = new ResultBean();
+		resultBean.setResStatus("failed");
+		resultBean.setResMsg("退票失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			rs = stat.executeQuery(sql_que);
-			while (rs.next()) {
-				MemberBean memberBean = new MemberBean();
-				memberBean.setId(rs.getInt("id"));
-				memberBean.setUserId(rs.getInt("user_id"));
-				memberBean.setMemberRealName(rs.getString("member_real_name"));
-				memberBean.setMemberIdNumber(rs.getString("member_id_number"));
-				members.add(memberBean);
-				memberListBean.setResStatus("success");
-				memberListBean.setResMsg("查询成功");
+			int row = stat.executeUpdate(sql_upd);
+			if (row == 1) {
+				resultBean.setResStatus("success");
+				resultBean.setResMsg("退票成功");
+			} else {
+				resultBean.setResStatus("failed");
+				resultBean.setResMsg("退票失败");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			memberListBean.setResStatus("failer");
-			memberListBean.setResMsg("查询失败");
+			resultBean.setResStatus("failed");
+			resultBean.setResMsg("退票失败");
 		}
 
-		memberListBean.setMembers(members);
-		Gson gson = new Gson();
-		String result = gson.toJson(memberListBean);
 		// 通过输出流把业务逻辑的结果输出
+		Gson gson = new Gson();
+		String result = gson.toJson(resultBean);
 		out.print(result);
 		out.flush();
 		out.close();

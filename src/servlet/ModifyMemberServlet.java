@@ -18,6 +18,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 编辑联系人Servlet
+ * @author cookie
+ *
+ */
 public class ModifyMemberServlet extends HttpServlet {
 
 	/**

@@ -18,6 +18,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 删除联系人Servlet
+ * @author cookie
+ *
+ */
 public class DeleteMemberServlet extends HttpServlet {
 
 	/**
