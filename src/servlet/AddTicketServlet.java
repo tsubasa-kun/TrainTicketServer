@@ -19,6 +19,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 添加车票Servlet
+ * @author cookie
+ *
+ */
 public class AddTicketServlet extends HttpServlet {
 
 	/**
@@ -87,7 +92,7 @@ public class AddTicketServlet extends HttpServlet {
 		String wzMoney = request.getParameter("wzMoney");
 
 		// 执行数据库操作
-		// 添加进members
+		// 添加
 		String sql_ins = "INSERT INTO tickets(train_code, start_date, start_station_name, start_time, lishi, to_station_name, arrive_time, swz_num, zy_num, ze_num, yz_num, yw_num, wz_num, swz_money, zy_money, ze_money, yz_money, yw_money, wz_money) VALUES('"
 				+ trainCode
 				+ "', '"

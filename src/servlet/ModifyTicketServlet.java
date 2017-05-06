@@ -18,6 +18,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 修改车票Servlet
+ * @author cookie
+ *
+ */
 public class ModifyTicketServlet extends HttpServlet {
 
 	/**
@@ -87,7 +92,7 @@ public class ModifyTicketServlet extends HttpServlet {
 		String wzMoney = request.getParameter("wzMoney");
 
 		// 执行数据库操作
-		// 添加进members
+		// 修改
 		String sql_upd = "UPDATE tickets SET train_code = '" + trainCode
 				+ "', start_date = '" + startDate + "', start_station_name = '"
 				+ startStationName + "', start_time = '" + startTime

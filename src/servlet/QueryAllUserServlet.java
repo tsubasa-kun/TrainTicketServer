@@ -6,24 +6,24 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.ResultBean;
+import bean.TicketBean;
+import bean.TicketListBean;
+import bean.UserBean;
+import bean.UserListBean;
 
 import com.google.gson.Gson;
 
 import db.DBHelper;
 
-/**
- * 删除联系人Servlet
- * @author cookie
- *
- */
-public class DeleteMemberServlet extends HttpServlet {
+public class QueryAllUserServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -67,35 +67,40 @@ public class DeleteMemberServlet extends HttpServlet {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
 
-		// 获取参数
-		String id = request.getParameter("id");
-
 		// 执行数据库操作
-		String sql_del = "DELETE FROM members WHERE id = '" + id + "'";
+		String sql_que = "SELECT * FROM users ORDER BY user_id ASC";
 		Statement stat = null;
-		ResultBean resultBean = new ResultBean();
-		resultBean.setResStatus("failed");
-		resultBean.setResMsg("删除失败");
+		ResultSet rs = null;
+		UserListBean userListBean = new UserListBean();
+		userListBean.setResStatus("success");
+		userListBean.setResMsg("");
+		List<UserBean> users = new ArrayList<UserBean>();
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_del);
-			if (row == 1) {
-				resultBean.setResStatus("success");
-				resultBean.setResMsg("删除成功");
-			} else {
-				resultBean.setResStatus("failed");
-				resultBean.setResMsg("删除失败");
+			rs = stat.executeQuery(sql_que);
+			while (rs.next()) {
+				UserBean userBean = new UserBean();
+				userBean.setUserId(rs.getInt("user_id") + "");// 用户ID
+				userBean.setAccount(rs.getString("account"));// 账号
+				userBean.setPassword(rs.getString("password"));// 密码
+				userBean.setRealName(rs.getString("real_name"));// 真实姓名
+				userBean.setIdNumber(rs.getString("id_number"));// 出身份证号
+
+				users.add(userBean);
+				userListBean.setResStatus("success");
+				userListBean.setResMsg("查询成功");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			resultBean.setResStatus("failed");
-			resultBean.setResMsg("删除失败");
+			userListBean.setResStatus("failer");
+			userListBean.setResMsg("查询失败");
 		}
 
-		// 通过输出流把业务逻辑的结果输出
+		userListBean.setUsers(users);
 		Gson gson = new Gson();
-		String result = gson.toJson(resultBean);
+		String result = gson.toJson(userListBean);
+		// 通过输出流把业务逻辑的结果输出
 		out.print(result);
 		out.flush();
 		out.close();

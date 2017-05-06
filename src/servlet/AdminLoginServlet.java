@@ -18,6 +18,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 管理员登录Servlet
+ * @author cookie
+ *
+ */
 public class AdminLoginServlet extends HttpServlet {
 
 	/**

@@ -3,7 +3,6 @@ package servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -19,11 +18,11 @@ import com.google.gson.Gson;
 import db.DBHelper;
 
 /**
- * 删除联系人Servlet
+ * 删除用户Servlet
  * @author cookie
  *
  */
-public class DeleteMemberServlet extends HttpServlet {
+public class DeleteUserServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -68,10 +67,11 @@ public class DeleteMemberServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String id = request.getParameter("id");
+		String userId = request.getParameter("userId");
 
 		// 执行数据库操作
-		String sql_del = "DELETE FROM members WHERE id = '" + id + "'";
+		String sql_del = "DELETE FROM users WHERE user_id = '" + userId + "'";
+		String sql_del2 = "DELETE FROM members WHERE user_id = '" + userId + "'";
 		Statement stat = null;
 		ResultBean resultBean = new ResultBean();
 		resultBean.setResStatus("failed");
@@ -81,6 +81,7 @@ public class DeleteMemberServlet extends HttpServlet {
 			stat = conn.createStatement();
 			int row = stat.executeUpdate(sql_del);
 			if (row == 1) {
+				stat.executeUpdate(sql_del2);
 				resultBean.setResStatus("success");
 				resultBean.setResMsg("删除成功");
 			} else {

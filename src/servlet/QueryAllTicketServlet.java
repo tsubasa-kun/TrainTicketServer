@@ -21,6 +21,11 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
+/**
+ * 查询所有车票Servlet
+ * @author cookie
+ *
+ */
 public class QueryAllTicketServlet extends HttpServlet {
 
 	/**

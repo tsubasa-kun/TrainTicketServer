@@ -111,6 +111,34 @@
     <servlet-name>DeleteTicketServlet</servlet-name>
     <servlet-class>servlet.DeleteTicketServlet</servlet-class>
   </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>QueryAllUserServlet</servlet-name>
+    <servlet-class>servlet.QueryAllUserServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AddUserServlet</servlet-name>
+    <servlet-class>servlet.AddUserServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>DeleteUserServlet</servlet-name>
+    <servlet-class>servlet.DeleteUserServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ModifyUserServlet</servlet-name>
+    <servlet-class>servlet.ModifyUserServlet</servlet-class>
+  </servlet>
+
+
+
+
 
 
 
@@ -201,5 +229,21 @@
   <servlet-mapping>
     <servlet-name>DeleteTicketServlet</servlet-name>
     <url-pattern>/servlet/DeleteTicketServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryAllUserServlet</servlet-name>
+    <url-pattern>/servlet/QueryAllUserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AddUserServlet</servlet-name>
+    <url-pattern>/servlet/AddUserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DeleteUserServlet</servlet-name>
+    <url-pattern>/servlet/DeleteUserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ModifyUserServlet</servlet-name>
+    <url-pattern>/servlet/ModifyUserServlet</url-pattern>
   </servlet-mapping>
 </web-app>
