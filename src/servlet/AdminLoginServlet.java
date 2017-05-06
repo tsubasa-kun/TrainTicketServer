@@ -12,19 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import bean.ResultBean;
+import bean.UserBean;
 
 import com.google.gson.Gson;
 
 import db.DBHelper;
 
-/**
- * 编辑联系人Servlet
- * 
- * @author cookie
- * 
- */
-public class ModifyMemberServlet extends HttpServlet {
+public class AdminLoginServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -69,39 +63,37 @@ public class ModifyMemberServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String id = request.getParameter("id");
-		String realName = request.getParameter("realName");
-		String idNumber = request.getParameter("idNumber");
+		String account = request.getParameter("account");
+		String password = request.getParameter("password");
 
 		// 执行数据库操作
-		// 修改
-		String sql_upd = "UPDATE members SET member_real_name = '" + realName
-				+ "',member_id_number = '" + idNumber + "' WHERE id = '" + id
-				+ "'";
+		String sql_que = "SELECT * FROM admins WHERE account = '" + account
+				+ "' AND password = '" + password + "'";
 		Statement stat = null;
-		ResultBean resultBean = new ResultBean();
-		resultBean.setResStatus("failed");
-		resultBean.setResMsg("修改失败");
+		ResultSet rs = null;
+		UserBean userBean = new UserBean();
+		userBean.setResStatus("failed");
+		userBean.setResMsg("账号或密码错误");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_upd);
-			if (row == 1) {
-				resultBean.setResStatus("success");
-				resultBean.setResMsg("修改成功");
-			} else {
-				resultBean.setResStatus("failed");
-				resultBean.setResMsg("修改失败");
+			rs = stat.executeQuery(sql_que);
+			while (rs.next()) {
+				userBean.setResStatus("success");
+				userBean.setResMsg("登录成功");
+				userBean.setUserId(rs.getInt("admin_id") + "");
+				userBean.setAccount(rs.getString("account"));
+				userBean.setPassword(rs.getString("password"));
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
-			resultBean.setResStatus("failed");
-			resultBean.setResMsg("修改失败");
+			userBean.setResStatus("failed");
+			userBean.setResMsg("登录失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出
 		Gson gson = new Gson();
-		String result = gson.toJson(resultBean);
+		String result = gson.toJson(userBean);
 		out.print(result);
 		out.flush();
 		out.close();

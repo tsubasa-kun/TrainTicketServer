@@ -18,13 +18,7 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
-/**
- * 编辑联系人Servlet
- * 
- * @author cookie
- * 
- */
-public class ModifyMemberServlet extends HttpServlet {
+public class DeleteTicketServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -69,34 +63,29 @@ public class ModifyMemberServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String id = request.getParameter("id");
-		String realName = request.getParameter("realName");
-		String idNumber = request.getParameter("idNumber");
+		String trainId = request.getParameter("trainId");
 
 		// 执行数据库操作
-		// 修改
-		String sql_upd = "UPDATE members SET member_real_name = '" + realName
-				+ "',member_id_number = '" + idNumber + "' WHERE id = '" + id
-				+ "'";
+		String sql_del = "DELETE FROM tickets WHERE train_id = '" + trainId + "'";
 		Statement stat = null;
 		ResultBean resultBean = new ResultBean();
 		resultBean.setResStatus("failed");
-		resultBean.setResMsg("修改失败");
+		resultBean.setResMsg("删除失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_upd);
+			int row = stat.executeUpdate(sql_del);
 			if (row == 1) {
 				resultBean.setResStatus("success");
-				resultBean.setResMsg("修改成功");
+				resultBean.setResMsg("删除成功");
 			} else {
 				resultBean.setResStatus("failed");
-				resultBean.setResMsg("修改失败");
+				resultBean.setResMsg("删除失败");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			resultBean.setResStatus("failed");
-			resultBean.setResMsg("修改失败");
+			resultBean.setResMsg("删除失败");
 		}
 
 		// 通过输出流把业务逻辑的结果输出

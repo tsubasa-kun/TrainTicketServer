@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet {
 		ResultSet rs = null;
 		UserBean userBean = new UserBean();
 		userBean.setResStatus("failed");
-		userBean.setResMsg("用户名或密码错误");
+		userBean.setResMsg("账号或密码错误");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();

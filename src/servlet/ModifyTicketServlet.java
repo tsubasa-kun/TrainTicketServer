@@ -2,8 +2,8 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -18,13 +18,7 @@ import com.google.gson.Gson;
 
 import db.DBHelper;
 
-/**
- * 编辑联系人Servlet
- * 
- * @author cookie
- * 
- */
-public class ModifyMemberServlet extends HttpServlet {
+public class ModifyTicketServlet extends HttpServlet {
 
 	/**
 	 * The doGet method of the servlet. <br>
@@ -69,15 +63,43 @@ public class ModifyMemberServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		// 获取参数
-		String id = request.getParameter("id");
-		String realName = request.getParameter("realName");
-		String idNumber = request.getParameter("idNumber");
+		String trainId = request.getParameter("trainId");
+		String trainCode = request.getParameter("trainCode");
+		String startDate = request.getParameter("startDate");
+		String startStationName = URLDecoder.decode(URLDecoder.decode(
+				request.getParameter("startStationName"), "UTF-8"), "UTF-8");
+		String startTime = request.getParameter("startTime");
+		String lishi = request.getParameter("lishi");
+		String toStationName = URLDecoder.decode(URLDecoder.decode(
+				request.getParameter("toStationName"), "UTF-8"), "UTF-8");
+		String arriveTime = request.getParameter("arriveTime");
+		String swzNum = request.getParameter("swzNum");
+		String zyNum = request.getParameter("zyNum");
+		String zeNum = request.getParameter("zeNum");
+		String yzNum = request.getParameter("yzNum");
+		String ywNum = request.getParameter("ywNum");
+		String wzNum = request.getParameter("wzNum");
+		String swzMoney = request.getParameter("swzMoney");
+		String zyMoney = request.getParameter("zyMoney");
+		String zeMoney = request.getParameter("zeMoney");
+		String yzMoney = request.getParameter("yzMoney");
+		String ywMoney = request.getParameter("ywMoney");
+		String wzMoney = request.getParameter("wzMoney");
 
 		// 执行数据库操作
-		// 修改
-		String sql_upd = "UPDATE members SET member_real_name = '" + realName
-				+ "',member_id_number = '" + idNumber + "' WHERE id = '" + id
-				+ "'";
+		// 添加进members
+		String sql_upd = "UPDATE tickets SET train_code = '" + trainCode
+				+ "', start_date = '" + startDate + "', start_station_name = '"
+				+ startStationName + "', start_time = '" + startTime
+				+ "', lishi = '" + lishi + "', to_station_name = '"
+				+ toStationName + "', arrive_time = '" + arriveTime
+				+ "', swz_num = '" + swzNum + "', zy_num = '" + zyNum
+				+ "', ze_num = '" + zeNum + "', yz_num = '" + yzNum
+				+ "', yw_num = '" + ywNum + "', wz_num = '" + wzNum
+				+ "', swz_money = '" + swzMoney + "', zy_money = '" + zyMoney
+				+ "', ze_money = '" + zeMoney + "', yz_money = '" + yzMoney
+				+ "', yw_money = '" + ywMoney + "', wz_money = '" + wzMoney
+				+ "' WHERE train_id = '" + trainId + "'";
 		Statement stat = null;
 		ResultBean resultBean = new ResultBean();
 		resultBean.setResStatus("failed");

@@ -81,6 +81,41 @@
     <servlet-name>TuiTicketServlet</servlet-name>
     <servlet-class>servlet.TuiTicketServlet</servlet-class>
   </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AdminLoginServlet</servlet-name>
+    <servlet-class>servlet.AdminLoginServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>QueryAllTicketServlet</servlet-name>
+    <servlet-class>servlet.QueryAllTicketServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AddTicketServlet</servlet-name>
+    <servlet-class>servlet.AddTicketServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ModifyTicketServlet</servlet-name>
+    <servlet-class>servlet.ModifyTicketServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>DeleteTicketServlet</servlet-name>
+    <servlet-class>servlet.DeleteTicketServlet</servlet-class>
+  </servlet>
+
+
+
+
+
 
 
 
@@ -146,5 +181,25 @@
   <servlet-mapping>
     <servlet-name>TuiTicketServlet</servlet-name>
     <url-pattern>/servlet/TuiTicketServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminLoginServlet</servlet-name>
+    <url-pattern>/servlet/AdminLoginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryAllTicketServlet</servlet-name>
+    <url-pattern>/servlet/QueryAllTicketServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AddTicketServlet</servlet-name>
+    <url-pattern>/servlet/AddTicketServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ModifyTicketServlet</servlet-name>
+    <url-pattern>/servlet/ModifyTicketServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DeleteTicketServlet</servlet-name>
+    <url-pattern>/servlet/DeleteTicketServlet</url-pattern>
   </servlet-mapping>
 </web-app>
