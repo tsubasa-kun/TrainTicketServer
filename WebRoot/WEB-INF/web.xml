@@ -135,6 +135,13 @@
     <servlet-name>ModifyUserServlet</servlet-name>
     <servlet-class>servlet.ModifyUserServlet</servlet-class>
   </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>QueryAllOrderServlet</servlet-name>
+    <servlet-class>servlet.QueryAllOrderServlet</servlet-class>
+  </servlet>
+
 
 
 
@@ -245,5 +252,9 @@
   <servlet-mapping>
     <servlet-name>ModifyUserServlet</servlet-name>
     <url-pattern>/servlet/ModifyUserServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryAllOrderServlet</servlet-name>
+    <url-pattern>/servlet/QueryAllOrderServlet</url-pattern>
   </servlet-mapping>
 </web-app>

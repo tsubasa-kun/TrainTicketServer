@@ -22,8 +22,17 @@ public class OrderBean extends ResultBean {
     private String seatNo;// 座位号
     private String money;//票价
     private String type;//车票类型
+    private int status;//车票状态
     
-    public String getRealName() {
+    public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getRealName() {
         return realName;
     }
 
