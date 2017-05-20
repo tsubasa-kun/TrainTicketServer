@@ -93,19 +93,64 @@ public class OrderTicketServlet extends HttpServlet {
 		String type = request.getParameter("type");
 		String id = request.getParameter("id");
 		
+		//数量操作符
 		if (id != null) {
-			// 执行数据库操作
+			String theTrainNo = "";
+			String theSeat = "";
+			//查询车次
+			String sql_que = "SELECT * FROM orders WHERE id = '" + id + "'";
 			//改签把此票的status改成3，orderID改成0
 			String sql_upd = "UPDATE orders SET order_id = '0', pay_status = '3' WHERE id = '" + id + "'";
+			// 执行数据库操作
 			Statement stat = null;
 			Connection conn = new DBHelper().getConnect();
 			try {
 				stat = conn.createStatement();
+				ResultSet rs = stat.executeQuery(sql_que); // 获取结果
+				while (rs.next()) {
+					theTrainNo = rs.getString("train_no");
+					theSeat = rs.getString("seat");
+				}
 				stat.executeUpdate(sql_upd);
+				
+				// 车票+1
+				String sql_upd2 = "UPDATE tickets SET";
+				if (theSeat.equals("商务座")) {
+					sql_upd2 = sql_upd2 + " swz_num = swz_num + 1";
+				} else if (theSeat.equals("一等座")) {
+					sql_upd2 = sql_upd2 + " zy_num = zy_num + 1";
+				} else if (theSeat.equals("二等座")) {
+					sql_upd2 = sql_upd2 + " ze_num = ze_num + 1";
+				} else if (theSeat.equals("硬座")) {
+					sql_upd2 = sql_upd2 + " yz_num = yz_num + 1";
+				} else if (theSeat.equals("硬卧")) {
+					sql_upd2 = sql_upd2 + " yw_num = yw_num + 1";
+				} else if (theSeat.equals("无座")) {
+					sql_upd2 = sql_upd2 + " wz_num = wz_num + 1";
+				}
+				sql_upd2 = sql_upd2 + " WHERE train_code = '" + theTrainNo + "'";
+				stat.executeUpdate(sql_upd2);
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
 		}
+		
+		// 车票-1
+		String sql_upd = "UPDATE tickets SET";
+		if (seat.equals("商务座")) {
+			sql_upd = sql_upd + " swz_num = swz_num - 1";
+		} else if (seat.equals("一等座")) {
+			sql_upd = sql_upd + " zy_num = zy_num - 1";
+		} else if (seat.equals("二等座")) {
+			sql_upd = sql_upd + " ze_num = ze_num - 1";
+		} else if (seat.equals("硬座")) {
+			sql_upd = sql_upd + " yz_num = yz_num - 1";
+		} else if (seat.equals("硬卧")) {
+			sql_upd = sql_upd + " yw_num = yw_num - 1";
+		} else if (seat.equals("无座")) {
+			sql_upd = sql_upd + " wz_num = wz_num - 1";
+		}
+		sql_upd = sql_upd + " WHERE train_code = '" + trainNo + "'";
 
 		int n = 0;
 		OrderListBean orderListBean = new OrderListBean();
@@ -170,6 +215,7 @@ public class OrderTicketServlet extends HttpServlet {
 					if (rs.next()) {
 						orderBean.setId(rs.getInt(1));// 取得ID
 					}
+					stat.executeUpdate(sql_upd);
 				} else {
 					orderBean.setResStatus("failed");
 					orderBean.setResMsg("生成订单失败");

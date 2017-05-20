@@ -73,6 +73,10 @@ public class TuiTicketServlet extends HttpServlet {
 		String id = request.getParameter("id");
 
 		// 执行数据库操作
+		String theTrainNo = "";
+		String theSeat = "";
+		//查询车次
+		String sql_que = "SELECT * FROM orders WHERE id = '" + id + "'";
         //退票把status改成2，orderID改成0
 		String sql_upd = "UPDATE orders SET order_id = '0', pay_status = '2' WHERE id = '" + id + "'";
 		Statement stat = null;
@@ -83,6 +87,31 @@ public class TuiTicketServlet extends HttpServlet {
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
+			rs = stat.executeQuery(sql_que); // 获取结果
+			while (rs.next()) {
+				
+				theTrainNo = rs.getString("train_no");
+				theSeat = rs.getString("seat");
+			}
+			
+			// 车票+1
+			String sql_upd2 = "UPDATE tickets SET";
+			if (theSeat.equals("商务座")) {
+				sql_upd2 = sql_upd2 + " swz_num = swz_num + 1";
+			} else if (theSeat.equals("一等座")) {
+				sql_upd2 = sql_upd2 + " zy_num = zy_num + 1";
+			} else if (theSeat.equals("二等座")) {
+				sql_upd2 = sql_upd2 + " ze_num = ze_num + 1";
+			} else if (theSeat.equals("硬座")) {
+				sql_upd2 = sql_upd2 + " yz_num = yz_num + 1";
+			} else if (theSeat.equals("硬卧")) {
+				sql_upd2 = sql_upd2 + " yw_num = yw_num + 1";
+			} else if (theSeat.equals("无座")) {
+				sql_upd2 = sql_upd2 + " wz_num = wz_num + 1";
+			}
+			sql_upd2 = sql_upd2 + " WHERE train_code = '" + theTrainNo + "'";
+			stat.executeUpdate(sql_upd2);
+			
 			int row = stat.executeUpdate(sql_upd);
 			if (row == 1) {
 				resultBean.setResStatus("success");

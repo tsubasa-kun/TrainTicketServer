@@ -90,8 +90,9 @@ public class AddTicketServlet extends HttpServlet {
 		String yzMoney = request.getParameter("yzMoney");
 		String ywMoney = request.getParameter("ywMoney");
 		String wzMoney = request.getParameter("wzMoney");
-
-		// 执行数据库操作
+		
+		// 查询
+		String sql_que = "SELECT * FROM tickets WHERE train_code = '" + trainCode + "'";
 		// 添加
 		String sql_ins = "INSERT INTO tickets(train_code, start_date, start_station_name, start_time, lishi, to_station_name, arrive_time, swz_num, zy_num, ze_num, yz_num, yw_num, wz_num, swz_money, zy_money, ze_money, yz_money, yw_money, wz_money) VALUES('"
 				+ trainCode
@@ -131,20 +132,28 @@ public class AddTicketServlet extends HttpServlet {
 				+ ywMoney
 				+ "', '"
 				+ wzMoney + "')";
+		// 执行数据库操作
 		Statement stat = null;
+		ResultSet rs = null;
 		ResultBean resultBean = new ResultBean();
 		resultBean.setResStatus("failed");
 		resultBean.setResMsg("添加失败");
 		Connection conn = new DBHelper().getConnect();
 		try {
 			stat = conn.createStatement();
-			int row = stat.executeUpdate(sql_ins);
-			if (row == 1) {
-				resultBean.setResStatus("success");
-				resultBean.setResMsg("添加成功");
-			} else {
+			rs = stat.executeQuery(sql_que);
+			if (rs.next()) {
 				resultBean.setResStatus("failed");
-				resultBean.setResMsg("添加失败");
+				resultBean.setResMsg("该车次已存在");
+			} else {
+				int row = stat.executeUpdate(sql_ins);
+				if (row == 1) {
+					resultBean.setResStatus("success");
+					resultBean.setResMsg("添加成功");
+				} else {
+					resultBean.setResStatus("failed");
+					resultBean.setResMsg("添加失败");
+				}
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
